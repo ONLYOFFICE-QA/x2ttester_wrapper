@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+	<reportPath>../reports/presentations_report.csv</reportPath>
+	<inputDirectory>../documents</inputDirectory>
+	<outputDirectory>../tmp</outputDirectory>
+	<x2tPath>./x2t.exe</x2tPath>
+	<cores>4</cores>
+	<input>presentations</input>
+	<fonts system="0">
+		<directory>../fonts</directory>
+	</fonts>
+</settings>
