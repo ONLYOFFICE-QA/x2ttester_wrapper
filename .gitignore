@@ -1,0 +1,11 @@
+.idea
+
+# bundler
+.bundle
+
+tmp
+
+# Artifacts of core work
+core
+documentserver-snap
+report.txt
