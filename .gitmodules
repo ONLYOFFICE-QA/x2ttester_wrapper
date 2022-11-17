@@ -1,0 +1,4 @@
+[submodule "assets/fonts"]
+	path = assets/fonts
+	url = git@github.com:ONLYOFFICE-QA/onlyoffice_private_fonts.git
+	branch = master/en
