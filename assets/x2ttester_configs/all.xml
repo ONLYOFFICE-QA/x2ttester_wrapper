@@ -6,6 +6,6 @@
 	<x2tPath>./x2t.exe</x2tPath>
 	<cores>4</cores>
 	<fonts system="0">
-		<directory>../fonts</directory>
+		<directory>../assets/fonts</directory>
 	</fonts>
 </settings>
