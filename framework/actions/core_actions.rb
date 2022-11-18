@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../config/static_data'
-
 # class for downloading and unpacking core
 class CoreActions
   def initialize

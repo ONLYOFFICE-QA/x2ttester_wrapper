@@ -22,12 +22,13 @@ class XmlActions
     File.write("#{path_to}/DoctRenderer.config", generate_doc_renderer_xml(StaticData::X2T_CONNECTIONS))
   end
 
+  # Generate parameters for x2ttester
   # @param [String] input_dir Path to directory with source files for conversion
   # @param [String] output_dir Path to the directory where the converted file will be saved
   # @param [String] cores Number of threads to convert
   # @param [String (frozen)] direction Conversion direction
   # @return [Tempfile]
-  def self.generate_param_for_x2ttester(cores, direction = 'all')
+  def self.generate_parameters(cores, direction = 'all')
     xml_parameters = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.Settings do
         xml.reportPath("#{StaticData::REPORTS_DIR}/#{direction}_report.csv")
