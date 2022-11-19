@@ -14,7 +14,7 @@ class CoreActions
 
   # generates the url for the core download
   def generate_url
-    @build = @build.sub(/.*\K\./, '-') if @os.include?('linux')
+    @build = @build.sub(/.*\K\./, '-') if @os.include?('linux') || @os.include?('mac')
     'https://s3.eu-west-1.amazonaws.com/repo-doc-onlyoffice-com/' \
     "#{@os}/core/#{@branch}/#{@version}/#{@build}/#{@arch}/core.7z"
   end
