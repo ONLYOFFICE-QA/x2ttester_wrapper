@@ -9,7 +9,7 @@ class HostConfig
     when 'linux'
       ['linux', Gem::Platform.local.cpu.sub('86_', ''), 'x2t', 'x2ttester', 'standardtester']
     when 'darwin'
-      ['mac', Gem::Platform.local.cpu.sub('arm', 'x'), 'x2t', 'x2ttester', 'standardtester']
+      ['mac', Gem::Platform.local.cpu.sub('arm64', 'arm'), 'x2t', 'x2ttester', 'standardtester']
     when 'mingw'
       ['windows', Gem::Platform.local.cpu, 'x2t.exe', 'x2ttester.exe', 'standardtester.exe']
     else
@@ -17,4 +17,3 @@ class HostConfig
     end
   end
 end
-
