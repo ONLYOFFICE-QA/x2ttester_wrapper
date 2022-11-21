@@ -5,10 +5,10 @@ class Converter
   # Run x2ttester
   # @param [String] conversion_direction Conversion direction
   # @param [String] core_num Number of threads to convert
-  def self.conversion_with_x2ttester(core_num, conversion_direction)
+  def conversion_via_x2ttester(core_num, conversion_direction)
     time_before = Time.now
-    tmp_xml = XmlActions.generate_parameters(core_num, conversion_direction)
-    system("#{StaticData::CORE_DIR}/#{StaticData::X2TTESTER} #{tmp_xml.path}")
+    tmp_xml = XmlActions.new.generate_parameters(core_num, conversion_direction)
+    system("#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:x2ttester]} #{tmp_xml.path}")
     p "Result time in seconds: #{Time.now - time_before}"
     tmp_xml.close!
   end

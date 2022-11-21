@@ -9,7 +9,7 @@ end
 
 
 desc 'Convert via x2ttester'
-task :convert, :direction, :cores do |_t, args|
+task :convert, :cores, :direction do |_t, args|
   case args[:direction].to_sym
   when :pre
     conversion_direction = 'presentations'
@@ -18,11 +18,9 @@ task :convert, :direction, :cores do |_t, args|
   when :spr
     conversion_direction = 'spreadsheets'
   when :all
-    conversion_direction =  'all'
+    conversion_direction = 'all'
   else
-    conversion_direction = ''
-    message = 'Input Error. Please, enter the correct parameters, Example: rake convert[direction,cores]'
-    puts(message)
+    raise('Input Error. Please, enter the correct parameters, Example: rake convert[direction,cores]')
   end
-  Converter.conversion_with_x2ttester(args[:cores], conversion_direction) if conversion_direction
+  Converter.new.conversion_via_x2ttester(args[:cores], conversion_direction)
 end

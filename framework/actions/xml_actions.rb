@@ -2,44 +2,44 @@
 
 # class for working with xml
 class XmlActions
-  # @param [Object] args
-  # @return [Object]
-  def self.generate_doc_renderer_xml(args)
+  def initialize
+    @x2t_config = JSON.load_file("#{Dir.pwd}/config.json")
+    @x2t_connections = JSON.load_file("#{Dir.pwd}/config/x2t_connections.json")
+    @x2tpath = "#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:x2t]}"
+  end
+
+  def generate_doc_renderer_xml
     Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.Settings do
-        xml.file(args.fetch('native'))
-        xml.file(args.fetch('jquery_native'))
-        xml.allfonts(args.fetch('AllFonts'))
-        xml.file(args.fetch('xregexp_all_min'))
-        xml.sdkjs(args.fetch('sdkjs'))
+        xml.file(@x2t_connections.fetch('native'))
+        xml.file(@x2t_connections.fetch('jquery_native'))
+        xml.allfonts(@x2t_connections.fetch('AllFonts'))
+        xml.file(@x2t_connections.fetch('xregexp_all_min'))
+        xml.sdkjs(@x2t_connections.fetch('sdkjs'))
       end
     end.to_xml
   end
 
-  # @param [Object] path_to
-  # @return [Integer]
-  def self.create_doc_renderer_config(path_to)
-    File.write("#{path_to}/DoctRenderer.config", generate_doc_renderer_xml(StaticData::X2T_CONNECTIONS))
+  def create_doc_renderer_config
+    File.write("#{ProjectConfig.core_dir}/DoctRenderer.config", generate_doc_renderer_xml)
   end
 
   # Generate parameters for x2ttester
-  # @param [String] input_dir Path to directory with source files for conversion
-  # @param [String] output_dir Path to the directory where the converted file will be saved
   # @param [String] cores Number of threads to convert
   # @param [String (frozen)] direction Conversion direction
   # @return [Tempfile]
-  def self.generate_parameters(cores, direction = 'all')
+  def generate_parameters(cores, direction = 'all')
     xml_parameters = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.Settings do
-        xml.reportPath("#{StaticData::REPORTS_DIR}/#{direction}_report.csv")
-        xml.inputDirectory(StaticData::CONFIG.fetch('input_dir'))
-        xml.outputDirectory(StaticData::CONFIG.fetch('output_dir'))
-        xml.x2tPath(StaticData::X2T_PATH)
+        xml.reportPath("#{ProjectConfig.reports_dir}/#{direction}_report.csv")
+        xml.inputDirectory(@x2t_config.fetch('input_dir'))
+        xml.outputDirectory(@x2t_config.fetch('output_dir'))
+        xml.x2tPath(@x2tpath)
         xml.cores(cores)
         xml.input(direction) if direction != 'all'
-        if Dir.exist?(StaticData::FONTS_DIR) && !Dir.empty?(StaticData::FONTS_DIR)
+        if Dir.exist?(ProjectConfig.fonts_dir) && !Dir.empty?(ProjectConfig.fonts_dir)
           xml.fonts('system' => '0') do
-            xml.directory(StaticData::FONTS_DIR)
+            xml.directory(ProjectConfig.fonts_dir)
           end
         else
           xml.fonts('system' => '1') do
@@ -48,14 +48,14 @@ class XmlActions
         end
       end
     end
-    XmlActions.write_xml_to_tmp_file(xml_parameters)
+    write_xml_to_tmp_file(xml_parameters)
   end
 
   # Creates a unique temporary xml-file
   # @param [Object] xml_parameters
   # @return [null, Tempfile]
-  def self.write_xml_to_tmp_file(xml_parameters)
-    file = Tempfile.new(%w[params .xml], StaticData::TMP_DIR)
+  def write_xml_to_tmp_file(xml_parameters)
+    file = Tempfile.new(%w[params .xml], ProjectConfig.tmp_dir)
     file.write(xml_parameters.to_xml)
     file.rewind
     file
