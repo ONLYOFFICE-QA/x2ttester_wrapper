@@ -20,7 +20,8 @@ Afterwards install the dependencies with the bundle.
 ### Private fonts as a submodule
 
 The x2ttester run uses fonts from a private repository.
-You can install them as a `member` of ONLYOFFICE-QA and must have `ssh` access to the repository set up.
+You can install them as a `member` of ONLYOFFICE-QA
+and must have `ssh` access to the repository set up.
 
 ```shell
   git submodule update --init --recursive
