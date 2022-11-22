@@ -1,6 +1,11 @@
 {
   "branch": "",
   "version": "",
+  "cores": "4",
+  "errors_only": "1",
+  "delete": "1",
+  "timestamp": "1",
   "input_dir": "./documents/",
-  "output_dir": "./tmp/"
+  "output_dir": "./tmp/",
+  "files_array": []
 }
