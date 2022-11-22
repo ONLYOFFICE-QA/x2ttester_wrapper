@@ -64,10 +64,14 @@ class CoreActions
     `#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:standardtester]}`
   end
 
-  # Downloading and unpacking the core
   def download_core
-    check_core_on_server
     system("curl #{@url} --output #{@core_archive}")
+  end
+
+  # Downloading and unpacking the core
+  def getting_core
+    check_core_on_server
+    download_core
     unpacking_via_7zip(@core_archive, "#{Dir.pwd}/#{File.basename(@url, '.7z')}")
     FileUtils.rm_rf(@core_archive)
     change_core_access
