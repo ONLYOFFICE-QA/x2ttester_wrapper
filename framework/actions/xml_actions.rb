@@ -67,17 +67,13 @@ class XmlActions
         xml.cores(generate_number_of_cores)
         xml.input(input_format) if input_format
         xml.output(output_format) if output_format
-        xml.errorsOnly(generate_error_only) if @x2t_config.fetch('errors_only') != ''
-        xml.deleteOk(@x2t_config.fetch('delete')) if @x2t_config.fetch('delete') != ''
-        xml.timestamp(@x2t_config.fetch('timestamp')) if @x2t_config.fetch('timestamp') != ''
+        xml.errorsOnly(generate_error_only) if %w[1 0].include? @x2t_config.fetch('errors_only')
+        xml.deleteOk(@x2t_config.fetch('delete')) if %w[1 0].include? @x2t_config.fetch('delete')
+        xml.timestamp(@x2t_config.fetch('timestamp')) if %w[1 0].include? @x2t_config.fetch('timestamp')
         xml.inputFilesList(path_to_files_list) if path_to_files_list
         if Dir.exist?(ProjectConfig.fonts_dir) && !Dir.empty?(ProjectConfig.fonts_dir)
           xml.fonts('system' => '0') do
             xml.directory(ProjectConfig.fonts_dir)
-          end
-        else
-          xml.fonts('system' => '1') do
-            xml.directory('')
           end
         end
       end
