@@ -35,10 +35,15 @@ and must have `ssh` access to the repository set up.
 
 - `branch` - branch name with core. Examle: `release`
 - `version` - version the core. Example: `7.3.0.27`
+- `cores` - num cores to use
+- `errors_only` - reports only errors (default - 0)
+- `delete` - is delete successful conversions files (default - 0)
+- `timestamp` - timestamp in report file name (default - 1)
 - `input_dir` - path to the folder with the documents
 to be converted. By default: `./documents/`
 - `output_dir` - path to the folder with
 the resulting files. By default: `./tmp/`
+- `files_array` - file names for selective conversion
 
 Example:
 
@@ -46,8 +51,13 @@ Example:
 {
   "branch": "release",
   "version": "7.3.0.27",
+  "cores": "4",
+  "errors_only": "1",
+  "delete": "1",
+  "timestamp": "1",
   "input_dir": "./documents/",
-  "output_dir": "./tmp/"
+  "output_dir": "./tmp/",
+  "files_array": []
 }
 ```
 
@@ -57,15 +67,25 @@ Example:
 rake core
 ```
 
-### Start conversion
+### Start conversion with option
 
 ```shell
-rake convert[cores,direction] 
+rake convert[input_format,output_format,list] 
 ```
 
 Flags:
-`cores` - number of threads
-`direction` - conversion direction
+`input_format` - (non-required) input extensions of files
+(default - all possible input extensions)
+`output_format` - (non-required) output extensions of files
+(default - all possible output extensions)
+`list` - file list conversion, pass ls value to enable.
+Example: `rake convert[,,ls]`
+
+### Start conversion all formats to all formats
+
+```shell
+rake convert
+```
 
 ## Credits
 
