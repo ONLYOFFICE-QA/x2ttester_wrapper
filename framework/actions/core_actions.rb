@@ -13,6 +13,12 @@ class CoreActions
     @core_archive = "#{ProjectConfig.tmp_dir}/#{File.basename(@url)}"
   end
 
+  def generate_branch
+    return 'develop' if @x2t_config.fetch('version').include?('99.99.99')
+
+    'release'
+  end
+
   # @return [String] Generated version core for url
   def generate_version
     "v#{@x2t_config.fetch('version')}".sub(/.*\K\..*/, '')
@@ -49,15 +55,16 @@ class CoreActions
   # Checks if the file exists on the server and checks validity of url
   # @return [String] Response from the server
   def check_core_on_server
-    core_status = if @os.include?('windows')
-                    `curl --head #{@url} 2>&1`
-                  else
-                    `curl --head #{@url} 2>/dev/null`
-                  end
-    raise('get a curl response blank') if core_status == ''
-    return core_status if core_status.split("\r")[0].include?('200 OK')
+    %w[release hotfix].unshift(@branch).uniq.each do |branch|
+      if @branch != branch
+        @branch = branch
+        @url = generate_url
+      end
+      core_status = `#{generate_check_core_status_cmd}`
+      return core_status if core_status.split("\r")[0].include?('200 OK')
+    end
 
-    raise("Core not found, check version and branch settings are correct\nURL: #{@url}\nCurl response:\n#{core_status}")
+    raise("Core not found, check version\nURL: #{@url}\nCurl response:\n#{`#{generate_check_core_status_cmd}`}")
   end
 
   # @param [String] archive_path Path to the archive to unpack
