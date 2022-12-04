@@ -19,12 +19,16 @@ class XmlActions
     @x2t_config.fetch('cores')
   end
 
-  def generate_error_only
-    raise('Check errors only parameter in config.json') unless (@x2t_config.fetch('errors_only') != '') ||
-                                                               (@x2t_config.fetch('errors_only') != '0') ||
-                                                               (@x2t_config.fetch('errors_only') != '1')
+  def generate_input_dir_path
+    return "#{ProjectConfig::PROJECT_DIR}/documents/" if @x2t_config.fetch('input_dir') == ''
 
-    @x2t_config.fetch('errors_only')
+    @x2t_config.fetch('input_dir')
+  end
+
+  def generate_output_dir_dir_path
+    return ProjectConfig.tmp_dir.to_s if @x2t_config.fetch('output_dir') == ''
+
+    @x2t_config.fetch('output_dir')
   end
 
   def generate_doc_renderer_xml
@@ -61,13 +65,13 @@ class XmlActions
     xml_parameters = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.Settings do
         xml.reportPath("#{ProjectConfig.reports_dir}/#{input_format}_#{output_format}_report.csv")
-        xml.inputDirectory(@x2t_config.fetch('input_dir'))
-        xml.outputDirectory(@x2t_config.fetch('output_dir'))
+        xml.inputDirectory(generate_input_dir_path)
+        xml.outputDirectory(generate_output_dir_dir_path)
         xml.x2tPath(generate_x2t_path)
         xml.cores(generate_number_of_cores)
-        xml.input(input_format) if input_format
+        xml.input(@x2t_config.fetch('input_format')) if input_format
         xml.output(output_format) if output_format
-        xml.errorsOnly(generate_error_only) if %w[1 0].include? @x2t_config.fetch('errors_only')
+        xml.errorsOnly(@x2t_config.fetch('errors_only')) if %w[1 0].include? @x2t_config.fetch('errors_only')
         xml.deleteOk(@x2t_config.fetch('delete')) if %w[1 0].include? @x2t_config.fetch('delete')
         xml.timestamp(@x2t_config.fetch('timestamp')) if %w[1 0].include? @x2t_config.fetch('timestamp')
         xml.inputFilesList(path_to_files_list) if path_to_files_list

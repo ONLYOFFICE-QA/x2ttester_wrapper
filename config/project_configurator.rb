@@ -2,23 +2,24 @@
 
 # Module with methods for configuring the project
 module ProjectConfig
+  PROJECT_DIR = Dir.pwd
   def self.host_config
     @host_config ||= HostActions.new.host_validations
   end
 
   def self.core_dir
-    "#{Dir.pwd}/core/"
+    "#{PROJECT_DIR}/core/"
   end
 
   def self.fonts_dir
-    "#{Dir.pwd}/assets/fonts/"
+    "#{PROJECT_DIR}/assets/fonts/"
   end
 
   def self.reports_dir
-    "#{Dir.pwd}/reports/"
+    "#{PROJECT_DIR}/reports/"
   end
 
   def self.tmp_dir
-    "#{Dir.pwd}/tmp/"
+    "#{PROJECT_DIR}/tmp/"
   end
 end

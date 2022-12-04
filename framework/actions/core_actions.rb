@@ -8,6 +8,7 @@ class CoreActions
     @arch = ProjectConfig.host_config[:arch]
     @version = generate_version
     @build = generate_build
+    @branch = generate_branch
     @url = generate_url
     @core_archive = "#{ProjectConfig.tmp_dir}/#{File.basename(@url)}"
   end
@@ -28,8 +29,21 @@ class CoreActions
 
   # generates the url for the core download
   def generate_url
-    'https://s3.eu-west-1.amazonaws.com/repo-doc-onlyoffice-com/' \
-    "#{@os}/core/#{@branch}/#{@version}/#{@build}/#{@arch}/core.7z"
+    host = 'https://s3.eu-west-1.amazonaws.com/repo-doc-onlyoffice-com'
+    if @branch == 'develop'
+      "#{host}/#{@os}/core/#{@branch}/#{@build}/#{@arch}/core.7z"
+    else
+      "#{host}/#{@os}/core/#{@branch}/#{@version}/#{@build}/#{@arch}/core.7z"
+    end
+  end
+
+  # Generates a command to get information about the status of the core on the server
+  def generate_check_core_status_cmd
+    if @os.include?('windows')
+      "curl --head #{@url} 2>&1"
+    else
+      "curl --head #{@url} 2>/dev/null"
+    end
   end
 
   # Checks if the file exists on the server and checks validity of url
@@ -48,10 +62,12 @@ class CoreActions
 
   # @param [String] archive_path Path to the archive to unpack
   # @param [String] execute_path The path to the unpacking location
-  def unpacking_via_7zip(archive_path, execute_path)
+  # @param [FalseClass] delete_archive If true deletes the archive after downloading, by default it is false
+  def unpacking_via_7zip(archive_path, execute_path, delete_archive: false)
     File.open(archive_path, 'rb') do |file|
       SevenZipRuby::Reader.open(file) do |szr|
         szr.extract_all execute_path
+        FileUtils.rm_rf(archive_path) if delete_archive
       end
     end
   end
@@ -102,7 +118,7 @@ class CoreActions
     raise('Core Already up-to-date') if core_data == existing_core_data && existing_core_data != '' && core_data != ''
 
     FileUtils.rm_rf(ProjectConfig.core_dir)
-    p "Downloading core #{@branch}/#{@version}: #{@build} version"
+    print("Downloading core #{@branch}/#{@version}: #{@build} version\nOS: #{@os}\nURL: #{@url}\n")
     system("curl #{@url} --output #{@core_archive}")
   end
 
@@ -118,12 +134,11 @@ class CoreActions
 
   # Downloading and configures the core
   def getting_core
-    core_status = check_core_on_server
-    core_data = getting_core_date(core_status)
+    core_data = getting_core_date(check_core_on_server)
     download_core(core_data)
-    unpacking_via_7zip(@core_archive, ProjectConfig.core_dir)
+    unpacking_via_7zip(@core_archive, ProjectConfig.core_dir, delete_archive: true)
+    fix_double_core_folder
     write_core_date_on_file(core_data)
-    FileUtils.rm_rf(@core_archive)
     change_core_access
     XmlActions.new.create_doc_renderer_config
     generate_allfonts
