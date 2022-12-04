@@ -4,7 +4,6 @@
 class CoreActions
   def initialize
     @x2t_config = JSON.load_file("#{Dir.pwd}/config.json")
-    @branch = @x2t_config.fetch('branch')
     @os = ProjectConfig.host_config[:os]
     @arch = ProjectConfig.host_config[:arch]
     @version = generate_version
@@ -73,14 +72,13 @@ class CoreActions
   # @param [String] core_status Response from the server
   # @return [String] The date of core creation or a blank line
   def getting_core_date(core_status)
-    date = ''
     core_status.split("\n").each do |line|
       next unless line.include?(':')
 
       key, value = line.split(':')
-      date = value.strip if key.upcase == 'LAST-MODIFIED'
+      return value.strip if key.upcase == 'LAST-MODIFIED'
     end
-    date
+    ''
   end
 
   # Writes the date of core creation to the core.data file
@@ -106,6 +104,16 @@ class CoreActions
     FileUtils.rm_rf(ProjectConfig.core_dir)
     p "Downloading core #{@branch}/#{@version}: #{@build} version"
     system("curl #{@url} --output #{@core_archive}")
+  end
+
+  # checks doubling of the core folder after unpacking, removes for doubling the core folder
+  def fix_double_core_folder
+    return unless Dir.exist?("#{ProjectConfig.core_dir}core")
+
+    Dir["#{ProjectConfig.core_dir}core/*"].each do |file|
+      FileUtils.mv(file, ProjectConfig.core_dir)
+    end
+    FileUtils.rm_rf("#{ProjectConfig.core_dir}core/") if Dir.empty?("#{ProjectConfig.core_dir}core/")
   end
 
   # Downloading and configures the core
