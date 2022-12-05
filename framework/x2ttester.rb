@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # a class with methods to control the conversion
-class Converter
+class X2ttester
   def initialize
     @xml = XmlActions.new
   end
@@ -15,7 +15,7 @@ class Converter
 
   def conversion_via_x2ttester(input_format, output_format, list)
     if list == 'ls'
-      list_xml = @xml.generate_files_lis
+      list_xml = @xml.generate_files_list
       start_conversion(input_format, output_format, list_xml.path)
       list_xml.close!
     else

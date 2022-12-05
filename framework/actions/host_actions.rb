@@ -44,12 +44,9 @@ class HostActions
   # @return [Hash] host configuration list os, arch, x2t, x2ttester, standardtester
   def host_validations
     case Gem::Platform.local.os
-    when 'linux'
-      linux_configuration
-    when 'darwin'
-      mac_configuration
-    when 'mingw'
-      windows_configuration
+    when 'linux' then linux_configuration
+    when 'darwin' then mac_configuration
+    when 'mingw' then windows_configuration
     else
       raise('Error: definition os')
     end
