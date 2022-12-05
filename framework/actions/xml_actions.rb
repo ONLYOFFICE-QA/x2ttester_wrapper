@@ -3,7 +3,7 @@
 # class for working with xml
 class XmlActions
   def initialize
-    @x2t_config = JSON.load_file("#{Dir.pwd}/config.json")
+    @x2t_config = JSON.load_file("#{Dir.pwd}/config/x2ttester_config.json")
     @x2t_connections = JSON.load_file("#{Dir.pwd}/config/x2t_connections.json")
   end
 
@@ -14,7 +14,7 @@ class XmlActions
   end
 
   def generate_number_of_cores
-    raise('Please enter the number of cores in config.json ') if @x2t_config.fetch('cores') == ''
+    raise('Please enter the number of cores in x2ttester_config.json ') if @x2t_config.fetch('cores') == ''
 
     @x2t_config.fetch('cores')
   end
@@ -47,7 +47,7 @@ class XmlActions
     File.write("#{ProjectConfig.core_dir}/DoctRenderer.config", generate_doc_renderer_xml)
   end
 
-  def generate_files_lis
+  def generate_files_list
     xml_parameters = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.files do
         @x2t_config.fetch('files_array').each do |file_name|
@@ -69,7 +69,7 @@ class XmlActions
         xml.outputDirectory(generate_output_dir_dir_path)
         xml.x2tPath(generate_x2t_path)
         xml.cores(generate_number_of_cores)
-        xml.input(@x2t_config.fetch('input_format')) if input_format
+        xml.input(input_format) if input_format
         xml.output(output_format) if output_format
         xml.errorsOnly(@x2t_config.fetch('errors_only')) if %w[1 0].include? @x2t_config.fetch('errors_only')
         xml.deleteOk(@x2t_config.fetch('delete')) if %w[1 0].include? @x2t_config.fetch('delete')
