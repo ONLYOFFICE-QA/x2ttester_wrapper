@@ -2,7 +2,7 @@
 
 # Module with methods for configuring the project
 module ProjectConfig
-  PROJECT_DIR = Dir.pwd
+  PROJECT_DIR = Dir.pwd.freeze
   def self.host_config
     @host_config ||= HostActions.new.host_validations
   end
