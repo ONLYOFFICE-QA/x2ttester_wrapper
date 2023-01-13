@@ -25,3 +25,19 @@ describe XmlActions, type: :aruba do
     expect(array).to include(match(/sdkjs/))
   end
 end
+
+describe XmlActions, type: :aruba do
+  files_array_xml = described_class.new(config: "#{ProjectConfig::PROJECT_DIR}/spec/unit/config.json").generate_files_list
+  after(:all) do
+    files_array_xml.close!
+  end
+
+  it 'Check exist files_list_xml' do
+    expect(Pathname.new(files_array_xml)).to exist
+    expect(Pathname.new(files_array_xml)).to be_file
+  end
+
+  it 'comparison of xml files' do
+    expect(File.read(files_array_xml)).to eq(File.read("#{ProjectConfig::PROJECT_DIR}/spec/unit/file_array.xml"))
+  end
+end
