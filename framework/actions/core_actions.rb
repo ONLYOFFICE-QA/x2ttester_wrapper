@@ -13,6 +13,7 @@ class CoreActions
     @core_archive = "#{ProjectConfig.tmp_dir}/#{File.basename(@url)}"
   end
 
+  # @return [String] Generated branch for url
   def generate_branch
     return 'develop' if @x2t_config.fetch('version').include?('99.99.99')
 
@@ -44,11 +45,10 @@ class CoreActions
   end
 
   # Generates a command to get information about the status of the core on the server
-  def generate_check_core_status_cmd
-    if @os.include?('windows')
-      "curl --head #{@url} 2>&1"
-    else
-      "curl --head #{@url} 2>/dev/null"
+  def getting_core_status
+    uri = URI.parse(@url)
+    Net::HTTP.start(uri.hostname, uri.port, { use_ssl: uri.scheme == 'https' }) do |http|
+      http.request(Net::HTTP::Head.new(uri))
     end
   end
 
@@ -60,11 +60,11 @@ class CoreActions
         @branch = branch
         @url = generate_url
       end
-      core_status = `#{generate_check_core_status_cmd}`
-      return core_status if core_status.split("\r")[0].include?('200 OK')
+      core_status = getting_core_status
+      return core_status if core_status.code == '200'
     end
 
-    raise("Core not found, check version\nURL: #{@url}\nCurl response:\n#{`#{generate_check_core_status_cmd}`}")
+    raise("Core not found, check version\nURL: #{@url}\nResponse:\n#{getting_core_status}")
   end
 
   # @param [String] archive_path Path to the archive to unpack
@@ -86,27 +86,9 @@ class CoreActions
     FileUtils.chmod('+x', Dir.glob("#{Dir.pwd}/#{File.basename(@url, '.7z')}/*"))
   end
 
-  # Generate AllFonts.js
-  def generate_allfonts
-    `#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:standardtester]}`
-  end
-
-  # Finds the date of core creation on the server
-  # @param [String] core_status Response from the server
-  # @return [String] The date of core creation or a blank line
-  def getting_core_date(core_status)
-    core_status.split("\n").each do |line|
-      next unless line.include?(':')
-
-      key, value = line.split(':')
-      return value.strip if key.upcase == 'LAST-MODIFIED'
-    end
-    ''
-  end
-
   # Writes the date of core creation to the core.data file
   # @param [String] core_data the date of core creation
-  def write_core_date_on_file(core_data)
+  def write_core_date(core_data)
     File.write("#{ProjectConfig.core_dir}/core.data", core_data)
   end
 
@@ -118,15 +100,18 @@ class CoreActions
     File.read("#{ProjectConfig.core_dir}/core.data")
   end
 
-  # Checks if a core update is required and downloads core
-  # @param [String] core_data the date of core creation
-  def download_core(core_data)
+  def check_core_is_up_to_date(core_data)
     existing_core_data = read_core_data
     raise('Core Already up-to-date') if core_data == existing_core_data && existing_core_data != '' && core_data != ''
+  end
 
+  def download_core
     FileUtils.rm_rf(ProjectConfig.core_dir)
     print("Downloading core #{@branch}/#{@version}: #{@build} version\nOS: #{@os}\nURL: #{@url}\n")
-    system("curl #{@url} --output #{@core_archive}")
+    File.open(@core_archive, 'wb') do |file|
+      file.write(Net::HTTP.get_response(URI(@url)).body)
+    end
+    print('Download completed')
   end
 
   # checks doubling of the core folder after unpacking, removes for doubling the core folder
@@ -141,13 +126,13 @@ class CoreActions
 
   # Downloading and configures the core
   def getting_core
-    core_data = getting_core_date(check_core_on_server)
-    download_core(core_data)
+    core_status = check_core_on_server
+    check_core_is_up_to_date(core_status.to_hash['last-modified'][0])
+    download_core
     unpacking_via_7zip(@core_archive, ProjectConfig.core_dir, delete_archive: true)
     fix_double_core_folder
-    write_core_date_on_file(core_data)
+    write_core_date(core_status.to_hash['last-modified'][0])
     change_core_access
     XmlActions.new.create_doc_renderer_config
-    generate_allfonts
   end
 end
