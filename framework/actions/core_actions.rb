@@ -2,8 +2,8 @@
 
 # class for downloading and unpacking core
 class CoreActions
-  def initialize
-    @x2t_config = JSON.load_file("#{Dir.pwd}/config/x2ttester_config.json")
+  def initialize(config: ProjectConfig.x2ttester_config_path)
+    @x2ttester_config = JSON.load_file(config)
     @os = ProjectConfig.host_config[:os]
     @arch = ProjectConfig.host_config[:arch]
     @version = generate_version
@@ -15,22 +15,22 @@ class CoreActions
 
   # @return [String] Generated branch for url
   def generate_branch
-    return 'develop' if @x2t_config.fetch('version').include?('99.99.99')
+    return 'develop' if @x2ttester_config.fetch('version').include?('99.99.99')
 
     'release'
   end
 
   # @return [String] Generated version core for url
   def generate_version
-    "v#{@x2t_config.fetch('version')}".sub(/.*\K\..*/, '')
+    "v#{@x2ttester_config.fetch('version')}".sub(/.*\K\..*/, '')
   end
 
   # @return [String] Generated build for url
   def generate_build
     if @os.include?('windows')
-      @x2t_config.fetch('version')
+      @x2ttester_config.fetch('version')
     else
-      @x2t_config.fetch('version').sub(/.*\K\./, '-')
+      @x2ttester_config.fetch('version').sub(/.*\K\./, '-')
     end
   end
 

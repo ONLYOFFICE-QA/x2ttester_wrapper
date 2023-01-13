@@ -2,9 +2,9 @@
 
 # class for working with xml
 class XmlActions
-  def initialize
-    @x2t_config = JSON.load_file("#{Dir.pwd}/config/x2ttester_config.json")
-    @x2t_connections = JSON.load_file("#{Dir.pwd}/config/x2t_connections.json")
+  def initialize(config: ProjectConfig.x2ttester_config_path)
+    @x2ttester_config = JSON.load_file(config)
+    @x2t_connections = JSON.load_file("#{ProjectConfig::PROJECT_DIR}/config/x2t_connections.json")
   end
 
   def generate_x2t_path
@@ -14,21 +14,21 @@ class XmlActions
   end
 
   def generate_number_of_cores
-    raise('Please enter the number of cores in x2ttester_config.json ') if @x2t_config.fetch('cores') == ''
+    raise('Please enter the number of cores in x2ttester_config.json ') if @x2ttester_config.fetch('cores') == ''
 
-    @x2t_config.fetch('cores')
+    @x2ttester_config.fetch('cores')
   end
 
   def generate_input_dir_path
-    return "#{ProjectConfig::PROJECT_DIR}/documents/" if @x2t_config.fetch('input_dir') == ''
+    return "#{ProjectConfig::PROJECT_DIR}/documents/" if @x2ttester_config.fetch('input_dir') == ''
 
-    @x2t_config.fetch('input_dir')
+    @x2ttester_config.fetch('input_dir')
   end
 
   def generate_output_dir_dir_path
-    return ProjectConfig.tmp_dir.to_s if @x2t_config.fetch('output_dir') == ''
+    return ProjectConfig.tmp_dir.to_s if @x2ttester_config.fetch('output_dir') == ''
 
-    @x2t_config.fetch('output_dir')
+    @x2ttester_config.fetch('output_dir')
   end
 
   def generate_doc_renderer_xml
@@ -43,14 +43,15 @@ class XmlActions
     end.to_xml
   end
 
-  def create_doc_renderer_config
-    File.write("#{ProjectConfig.core_dir}/DoctRenderer.config", generate_doc_renderer_xml)
+  # Create DoctRenderer.config
+  def create_doc_renderer_config(path_to: ProjectConfig.core_dir)
+    File.write("#{path_to}/DoctRenderer.config", generate_doc_renderer_xml)
   end
 
   def generate_files_list
     xml_parameters = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
       xml.files do
-        @x2t_config.fetch('files_array').each do |file_name|
+        @x2ttester_config.fetch('files_array').each do |file_name|
           xml.file(file_name)
         end
       end
@@ -75,9 +76,9 @@ class XmlActions
         xml.cores(generate_number_of_cores)
         xml.input(input_format) if input_format
         xml.output(output_format) if output_format
-        xml.errorsOnly(@x2t_config.fetch('errors_only')) if %w[1 0].include? @x2t_config.fetch('errors_only')
-        xml.deleteOk(@x2t_config.fetch('delete')) if %w[1 0].include? @x2t_config.fetch('delete')
-        xml.timestamp(@x2t_config.fetch('timestamp')) if %w[1 0].include? @x2t_config.fetch('timestamp')
+        xml.errorsOnly(@x2ttester_config.fetch('errors_only')) if %w[1 0].include? @x2ttester_config.fetch('errors_only')
+        xml.deleteOk(@x2ttester_config.fetch('delete')) if %w[1 0].include? @x2ttester_config.fetch('delete')
+        xml.timestamp(@x2ttester_config.fetch('timestamp')) if %w[1 0].include? @x2ttester_config.fetch('timestamp')
         xml.inputFilesList(path_to_files_list) if path_to_files_list
         if Dir.exist?(ProjectConfig.fonts_dir) && !Dir.empty?(ProjectConfig.fonts_dir)
           xml.fonts('system' => '0') do

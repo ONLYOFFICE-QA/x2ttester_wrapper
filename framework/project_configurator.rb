@@ -22,4 +22,8 @@ module ProjectConfig
   def self.tmp_dir
     "#{PROJECT_DIR}/tmp/"
   end
+
+  def self.x2ttester_config_path
+    "#{PROJECT_DIR}/config/x2ttester_config.json"
+  end
 end
