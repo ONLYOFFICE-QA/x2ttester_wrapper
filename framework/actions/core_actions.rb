@@ -2,8 +2,8 @@
 
 # class for downloading and unpacking core
 class CoreActions
-  def initialize(config: ProjectConfig.x2ttester_config_path)
-    @x2ttester_config = JSON.load_file(config)
+  def initialize
+    @x2ttester_config = ProjectConfig::CONFIG
     @os = ProjectConfig.host_config[:os]
     @arch = ProjectConfig.host_config[:arch]
     @version = generate_version

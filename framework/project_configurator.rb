@@ -3,6 +3,7 @@
 # Module with methods for configuring the project
 module ProjectConfig
   PROJECT_DIR = Dir.pwd.freeze
+  CONFIG = JSON.load_file("#{PROJECT_DIR}/config/x2ttester_config.json")
   def self.host_config
     @host_config ||= HostActions.new.host_validations
   end

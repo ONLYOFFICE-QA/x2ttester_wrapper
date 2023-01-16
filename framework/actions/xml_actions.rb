@@ -2,8 +2,8 @@
 
 # class for working with xml
 class XmlActions
-  def initialize(config: ProjectConfig.x2ttester_config_path)
-    @x2ttester_config = JSON.load_file(config)
+  def initialize
+    @x2ttester_config = ProjectConfig::CONFIG
     @x2t_connections = JSON.load_file("#{ProjectConfig::PROJECT_DIR}/config/x2t_connections.json")
   end
 
