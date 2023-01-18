@@ -64,7 +64,7 @@ class CoreActions
       return core_status if core_status.code == '200'
     end
 
-    raise("Core not found, check version\nURL: #{@url}\nResponse:\n#{getting_core_status}")
+    raise(OnlyofficeLoggerHelper.red_log("Core not found\nURL: #{@url}\nResponse:\n#{getting_core_status}"))
   end
 
   # @param [String] archive_path Path to the archive to unpack
@@ -76,6 +76,7 @@ class CoreActions
         szr.extract_all execute_path
         FileUtils.rm_rf(archive_path) if delete_archive
       end
+      OnlyofficeLoggerHelper.green_log('Unpack completed')
     end
   end
 
@@ -102,22 +103,25 @@ class CoreActions
 
   def check_core_is_up_to_date(core_data)
     existing_core_data = read_core_data
-    raise('Core Already up-to-date') if core_data == existing_core_data && existing_core_data != '' && core_data != ''
+    return unless core_data == existing_core_data && existing_core_data != '' && core_data != ''
+
+    raise(OnlyofficeLoggerHelper.red_log('Core Already up-to-date'))
   end
 
   def download_core
     FileUtils.rm_rf(ProjectConfig.core_dir)
-    print("Downloading core #{@branch}/#{@version}: #{@build} version\nOS: #{@os}\nURL: #{@url}\n")
+    OnlyofficeLoggerHelper.green_log("Downloading core\nversion: #{@build}\nOS: #{@os}\nURL: #{@url}")
     File.open(@core_archive, 'wb') do |file|
       file.write(Net::HTTP.get_response(URI(@url)).body)
     end
-    print('Download completed')
+    OnlyofficeLoggerHelper.green_log('Download completed')
   end
 
   # checks doubling of the core folder after unpacking, removes for doubling the core folder
   def fix_double_core_folder
     return unless Dir.exist?("#{ProjectConfig.core_dir}core")
 
+    OnlyofficeLoggerHelper.green_log('Fixing double core folder after unpacking')
     Dir["#{ProjectConfig.core_dir}core/*"].each do |file|
       FileUtils.mv(file, ProjectConfig.core_dir)
     end

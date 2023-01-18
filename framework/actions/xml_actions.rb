@@ -55,6 +55,7 @@ class XmlActions
   # Create DoctRenderer.config
   def create_doc_renderer_config(path_to: ProjectConfig.core_dir)
     File.write("#{path_to}/DoctRenderer.config", generate_doc_renderer_xml)
+    OnlyofficeLoggerHelper.green_log('DoctRenderer.config created')
   end
 
   # Generate xml file with an array of file names for conversion
