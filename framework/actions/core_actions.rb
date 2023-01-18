@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# class for downloading and unpacking core
+# class for actions with core
 class CoreActions
   def initialize
     @x2ttester_config = ProjectConfig::CONFIG
@@ -101,6 +101,7 @@ class CoreActions
     File.read("#{ProjectConfig.core_dir}/core.data")
   end
 
+  # Checks that the current core version is up to date
   def check_core_is_up_to_date(core_data)
     existing_core_data = read_core_data
     return unless core_data == existing_core_data && existing_core_data != '' && core_data != ''
@@ -108,6 +109,7 @@ class CoreActions
     raise(OnlyofficeLoggerHelper.red_log('Core Already up-to-date'))
   end
 
+  # Downloads the core
   def download_core
     FileUtils.rm_rf(ProjectConfig.core_dir)
     OnlyofficeLoggerHelper.green_log("Downloading core\nversion: #{@build}\nOS: #{@os}\nURL: #{@url}")
