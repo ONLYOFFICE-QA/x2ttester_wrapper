@@ -27,13 +27,10 @@ and must have `ssh` access to the repository set up.
   git submodule update --init --recursive
 ```
 
-## Key Features
-
 ## How To Use
 
 ### First, you need to change the parameters in the config.json file
 
-- `branch` - branch name with core. Examle: `release`
 - `version` - version the core. Example: `7.3.0.27`
 - `cores` - num cores to use
 - `errors_only` - reports only errors (default - 0)
@@ -49,14 +46,13 @@ Example:
 
 ```shell
 {
-  "branch": "release",
   "version": "7.3.0.27",
   "cores": "4",
   "errors_only": "1",
   "delete": "1",
   "timestamp": "1",
   "input_dir": "./documents/",
-  "output_dir": "./tmp/",
+  "output_dir": "./output_dir/",
   "files_array": []
 }
 ```
@@ -74,11 +70,12 @@ rake convert[input_format,output_format,list]
 ```
 
 Flags:
-`input_format` - (non-required) input extensions of files
+
+- `input_format` - (non-required) input extensions of files
 (default - all possible input extensions)
-`output_format` - (non-required) output extensions of files
+- `output_format` - (non-required) output extensions of files
 (default - all possible output extensions)
-`list` - file list conversion, pass ls value to enable.
+- `list` - file list conversion, pass `ls` value to enable.
 Example: `rake convert[,,ls]`
 
 ### Start conversion all formats to all formats
