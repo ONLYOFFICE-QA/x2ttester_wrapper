@@ -10,9 +10,9 @@ class XmlActions
   # Checks if x2t  file exists and generates a path to it
   # @return [String] Path to x2t file
   def generate_x2t_path
-    raise('Check x2t File') unless File.exist?("#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:x2t]}")
+    raise('Check x2t File') unless File.exist?(File.join(ProjectConfig.core_dir, ProjectConfig.host_config[:x2t]))
 
-    "#{ProjectConfig.core_dir}/#{ProjectConfig.host_config[:x2t]}"
+    File.join(ProjectConfig.core_dir, ProjectConfig.host_config[:x2t])
   end
 
   # Checks the presence of the parameter "cores"
@@ -26,15 +26,19 @@ class XmlActions
   # Generates path to folder with source files for conversion
   # @return [String] Path to files for conversion
   def generate_input_dir_path
-    return "#{ProjectConfig::PROJECT_DIR}/documents/" if @x2ttester_config.fetch('input_dir') == ''
+    return File.join(ProjectConfig::PROJECT_DIR, 'documents') if @x2ttester_config.fetch('input_dir') == ''
+
+    return @x2ttester_config.fetch('input_dir').chop! if %w[/ \\].include? @x2ttester_config.fetch('input_dir').chars[-1]
 
     @x2ttester_config.fetch('input_dir')
   end
 
   # Generates path to directory with converted files
   # @return [String] path to directory with converted files
-  def generate_output_dir_dir_path
+  def generate_output_dir_path
     return ProjectConfig.tmp_dir.to_s if @x2ttester_config.fetch('output_dir') == ''
+
+    return @x2ttester_config.fetch('output_dir').chop! if %w[/ \\].include? @x2ttester_config.fetch('output_dir').chars[-1]
 
     @x2ttester_config.fetch('output_dir')
   end
@@ -74,7 +78,7 @@ class XmlActions
   # @param [String] input_format Source file extension
   # @param [String] output_format Converted file extension
   def generate_report_path(input_format, output_format)
-    "#{ProjectConfig.reports_dir}/#{input_format}_#{output_format}_report.csv"
+    File.join(ProjectConfig.reports_dir, "#{input_format}_#{output_format}_report.csv")
   end
 
   # Generate parameters for x2ttester
@@ -87,7 +91,7 @@ class XmlActions
       xml.Settings do
         xml.reportPath(generate_report_path(input_format, output_format))
         xml.inputDirectory(generate_input_dir_path)
-        xml.outputDirectory(generate_output_dir_dir_path)
+        xml.outputDirectory(generate_output_dir_path)
         xml.x2tPath(generate_x2t_path)
         xml.cores(generate_number_of_cores)
         xml.input(input_format) if input_format

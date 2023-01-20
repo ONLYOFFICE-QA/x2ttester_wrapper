@@ -9,22 +9,22 @@ module ProjectConfig
   end
 
   def self.core_dir
-    "#{PROJECT_DIR}/core/"
+    File.join(PROJECT_DIR, 'core')
   end
 
   def self.fonts_dir
-    "#{PROJECT_DIR}/assets/fonts/"
+    File.join(PROJECT_DIR, 'assets', 'fonts')
   end
 
   def self.reports_dir
-    "#{PROJECT_DIR}/reports/"
+    File.join(PROJECT_DIR, 'reports')
   end
 
   def self.tmp_dir
-    "#{PROJECT_DIR}/tmp/"
+    File.join(PROJECT_DIR, 'tmp')
   end
 
   def self.x2ttester_config_path
-    "#{PROJECT_DIR}/config/x2ttester_config.json"
+    File.join(PROJECT_DIR, 'config', 'x2ttester_config.json')
   end
 end

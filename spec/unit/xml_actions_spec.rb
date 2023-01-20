@@ -10,7 +10,7 @@ describe XmlActions, type: :aruba do
   ProjectConfig::CONFIG['errors_only'] = '1'
   ProjectConfig::CONFIG['delete'] = '1'
   ProjectConfig::CONFIG['timestamp'] = '1'
-  ProjectConfig::CONFIG['input_dir'] = '/db/files/'
+  ProjectConfig::CONFIG['input_dir'] = '/db/files'
   ProjectConfig::CONFIG['output_dir'] = './tmp'
   ProjectConfig::CONFIG['files_array'] = %w[0.ppt 1.xls 2.docx 3.xlsx 4.html 5.pdf]
   xml_actions = described_class.new

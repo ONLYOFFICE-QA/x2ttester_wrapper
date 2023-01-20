@@ -10,7 +10,7 @@ class CoreActions
     @build = generate_build
     @branch = generate_branch
     @url = generate_url
-    @core_archive = "#{ProjectConfig.tmp_dir}/#{File.basename(@url)}"
+    @core_archive = File.join(ProjectConfig.tmp_dir, File.basename(@url))
   end
 
   # @return [String] Generated branch for url
@@ -90,15 +90,15 @@ class CoreActions
   # Writes the date of core creation to the core.data file
   # @param [String] core_data the date of core creation
   def write_core_date(core_data)
-    File.write("#{ProjectConfig.core_dir}/core.data", core_data)
+    File.write(File.join(ProjectConfig.core_dir, 'core.data'), core_data)
   end
 
   # Reads the previously recorded date of the core creation from the file
   # @return [String] The date of creation of the existing core
   def read_core_data
-    return '' unless File.exist?("#{ProjectConfig.core_dir}/core.data")
+    return '' unless File.exist?(File.join(ProjectConfig.core_dir, 'core.data'))
 
-    File.read("#{ProjectConfig.core_dir}/core.data")
+    File.read(File.join(ProjectConfig.core_dir, 'core.data'))
   end
 
   # Checks that the current core version is up to date
@@ -121,13 +121,13 @@ class CoreActions
 
   # checks doubling of the core folder after unpacking, removes for doubling the core folder
   def fix_double_core_folder
-    return unless Dir.exist?("#{ProjectConfig.core_dir}core")
+    return unless Dir.exist?(File.join(ProjectConfig.core_dir, 'core'))
 
     OnlyofficeLoggerHelper.green_log('Fixing double core folder after unpacking')
-    Dir["#{ProjectConfig.core_dir}core/*"].each do |file|
+    Dir[File.join(ProjectConfig.core_dir, 'core', '*')].each do |file|
       FileUtils.mv(file, ProjectConfig.core_dir)
     end
-    FileUtils.rm_rf("#{ProjectConfig.core_dir}core/") if Dir.empty?("#{ProjectConfig.core_dir}core/")
+    FileUtils.rm_rf(File.join(ProjectConfig.core_dir, 'core'))
   end
 
   # Downloading and configures the core
