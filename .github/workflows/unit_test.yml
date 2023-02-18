@@ -2,16 +2,19 @@ name: Unit_test
 on: [push]
 jobs:
   test:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.0
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3
-      - name: Run tests
-        run: rspec ./spec/unit
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, windows-latest, macos-latest ]
+      runs-on: ${{ matrix.platform }}
+      steps:
+        - uses: actions/checkout@v2
+        - name: Set up Ruby
+          uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: 3.2
+        - name: Install dependencies
+          run: |
+            gem install bundler
+            bundle install --jobs 4 --retry 3
+        - name: Run tests
+          run: rspec ./spec/unit
