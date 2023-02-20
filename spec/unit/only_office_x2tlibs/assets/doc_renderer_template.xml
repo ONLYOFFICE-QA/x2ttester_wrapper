@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+  <file>./sdkjs/common/Native/native.js</file>
+  <file>./sdkjs/common/Native/jquery_native.js</file>
+  <allfonts>./fonts/AllFonts.js</allfonts>
+  <file>./sdkjs/vendor/xregexp/xregexp-all-min.js</file>
+  <sdkjs>./sdkjs</sdkjs>
+</Settings>
