@@ -33,14 +33,15 @@ and must have `ssh` access to the repository set up.
 
 - `version` - version the core. Example: `7.3.0.27`
 - `cores` - num cores to use
-- `errors_only` - reports only errors (default - 0)
-- `delete` - is delete successful conversions files (default - 0)
-- `timestamp` - timestamp in report file name (default - 1)
+- `errors_only` - reports only errors (value: `true\false`)
+- `delete` - is delete successful conversions files (value: `true\false`)
+- `timestamp` - timestamp in report file name (value: `true\false`)
 - `input_dir` - path to the folder with the documents
 to be converted. By default: `./documents/`
 - `output_dir` - path to the folder with
 the resulting files. By default: `./tmp/`
 - `files_array` - file names for selective conversion
+- `core_host_url` - Host address with OnlyOffice core files. Example 'https://s3.eu-west-1.amazonaws.com'
 
 Example:
 
@@ -48,25 +49,32 @@ Example:
 {
   "version": "7.3.0.27",
   "cores": "4",
-  "errors_only": "1",
-  "delete": "1",
-  "timestamp": "1",
+  "errors_only": "false",
+  "delete": "true",
+  "timestamp": "true",
   "input_dir": "./documents/",
   "output_dir": "./output_dir/",
   "files_array": []
+  "core_host_url": "https://s3.eu-west-1.amazonaws.com"
 }
 ```
 
 ### Download core
 
 ```shell
-rake core
+rake download_core
 ```
 
 ### Start conversion with option
 
 ```shell
-rake convert[input_format,output_format,list] 
+rake convert[input_format,output_format] 
+```
+
+### Start selective conversion by file name from config.json
+
+```shell
+rake convert_array[input_format,output_format] 
 ```
 
 Flags:
@@ -75,8 +83,6 @@ Flags:
 (default - all possible input extensions)
 - `output_format` - (non-required) output extensions of files
 (default - all possible output extensions)
-- `list` - file list conversion, pass `ls` value to enable.
-Example: `rake convert[,,ls]`
 
 ### Start conversion all formats to all formats
 
