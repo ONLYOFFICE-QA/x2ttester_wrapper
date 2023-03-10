@@ -1,0 +1,11 @@
+{
+  "version": "0.0.0.000",
+  "cores": "8",
+  "errors_only": "true",
+  "delete": "true",
+  "timestamp": "true",
+  "input_dir": "/custom/path",
+  "output_dir": "/tmp",
+  "files_array": [],
+  "core_host_url": "https://s3.eu-west-1.amazonaws.com"
+}
