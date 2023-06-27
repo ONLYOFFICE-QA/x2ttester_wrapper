@@ -41,7 +41,7 @@ to be converted. By default: `./documents/`
 - `output_dir` - path to the folder with
 the resulting files. By default: `./tmp/`
 - `files_array` - file names for selective conversion
-- `core_host_url` - Host address with OnlyOffice core files. Example 'https://s3.eu-west-1.amazonaws.com'
+- `core_host_url` - Host address with OnlyOffice core files. Example <https://s3.eu-west-1.amazonaws.com>
 
 Example:
 
