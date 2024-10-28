@@ -3,7 +3,7 @@ GEM
   specs:
     ast (2.4.2)
     diff-lcs (1.5.1)
-    json (2.7.3)
+    json (2.7.4)
     language_server-protocol (3.17.0.3)
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
