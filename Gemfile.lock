@@ -5,7 +5,7 @@ GEM
     diff-lcs (1.5.1)
     json (2.9.0)
     language_server-protocol (3.17.0.3)
-    nokogiri (1.16.8-x86_64-linux)
+    nokogiri (1.17.1-x86_64-linux)
       racc (~> 1.4)
     onlyoffice_file_helper (2.1.0)
       onlyoffice_logger_helper (~> 1)
