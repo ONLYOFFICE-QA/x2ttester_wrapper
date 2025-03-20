@@ -6,7 +6,7 @@ GEM
     json (2.10.1)
     language_server-protocol (3.17.0.4)
     lint_roller (1.1.0)
-    nokogiri (1.18.3-x86_64-linux-gnu)
+    nokogiri (1.18.5-x86_64-linux-gnu)
       racc (~> 1.4)
     onlyoffice_file_helper (2.1.0)
       onlyoffice_logger_helper (~> 1)
